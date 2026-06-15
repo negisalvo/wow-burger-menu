@@ -1,4 +1,8 @@
 import { Category, MenuItem } from '../types';
+import gourmetBurgerHero from '../assets/images/gourmet_burger_hero_1781288051773.jpg';
+import gourmetTruffleFries from '../assets/images/gourmet_truffle_fries_1781288103520.jpg';
+import specialtyCoffeePour from '../assets/images/specialty_coffee_pour_1781288070716.jpg';
+import chocolateLavaDessert from '../assets/images/chocolate_lava_dessert_1781288087237.jpg';
 
 export const CATEGORIES: Category[] = [
   {
@@ -53,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'burgers',
     price: 520,
     description: 'Our crown-jewel double flame-grilled beef patty, melted double cheddar cheese, caramelized balsamic onions, fresh crisp butter lettuce, and organic heirloom tomatoes with WOW special house sauce on a glazed, toasted brioche bun.',
-    imageUrl: '/src/assets/images/gourmet_burger_hero_1781288051773.jpg',
+    imageUrl: gourmetBurgerHero,
     ingredients: ['Double flame-grilled beef patty', 'Glistening toasted brioche bun', 'Double sharp cheddar', 'Slow-caramelized onions', 'Organic butter lettuce', 'Heirloom tomatoes', 'WOW secret house sauce'],
     estimatedTime: '12-15 mins',
     nutrition: {
@@ -139,7 +143,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'fries-sides',
     price: 260,
     description: 'Golden crispy white potatoes hand-cut in-house, lightly tossed with aromatic black truffle-infused oil, freshly picked highland mountain rosemary, coarse sea salt, and finely grated aged parmesan cheese.',
-    imageUrl: '/src/assets/images/gourmet_truffle_fries_1781288103520.jpg',
+    imageUrl: gourmetTruffleFries,
     ingredients: ['In-house white potatoes', 'Pure black truffle oil', 'Highland rosemary sprigs', 'Coarse gray salt', 'Grated aged parmesan', 'Smoked garlic dipping sauce'],
     estimatedTime: '8 mins',
     nutrition: {
@@ -205,7 +209,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'coffee',
     price: 180,
     description: 'Micro-lot single-origin organic arabica coffee sourced directly from dry-processed farms in Yirgacheffe. Elegantly hand-poured via V60 to express high jasmine floral fragrance, crisp citrus lime acidity, and smooth raw honey undertones.',
-    imageUrl: '/src/assets/images/specialty_coffee_pour_1781288070716.jpg',
+    imageUrl: specialtyCoffeePour,
     ingredients: ['Premium Yirgacheffe Arabica beans', 'Fine micro-filtered mountain spring water', 'Pristine paper filter chemistry'],
     estimatedTime: '5-7 mins',
     nutrition: {
@@ -379,7 +383,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'desserts',
     price: 320,
     description: 'Decadent slow-baked dark chocolate cake shell containing a dense, warm, oozing molten dark chocolate center, served with a velvety side scoop of house vanilla bean gelato, fresh raspberries, and a delicate mint leaf.',
-    imageUrl: '/src/assets/images/chocolate_lava_dessert_1781288087237.jpg',
+    imageUrl: chocolateLavaDessert,
     ingredients: ['Belgian 72% organic dark chocolate', 'Local pasture-raised organic eggs', 'Madagascar organic vanilla pod oil', 'Artisanal micro-gelato cream scoop', 'Fresh mountain red raspberries'],
     estimatedTime: '10-12 mins',
     nutrition: {

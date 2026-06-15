@@ -37,7 +37,23 @@ export function getStoredMenuItems(): MenuItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.MENU_ITEMS);
     if (raw) {
-      return JSON.parse(raw) as MenuItem[];
+      const parsed = JSON.parse(raw) as MenuItem[];
+      // Dynamic migration: replace obsolete `/src/assets/images/` paths with the compiled Vite asset equivalents
+      let hasChanged = false;
+      const migrated = parsed.map(item => {
+        if (item.imageUrl && item.imageUrl.startsWith('/src/assets/images/')) {
+          const matchingDefault = DEFAULT_MENU_ITEMS.find(mi => mi.id === item.id);
+          if (matchingDefault) {
+            hasChanged = true;
+            return { ...item, imageUrl: matchingDefault.imageUrl };
+          }
+        }
+        return item;
+      });
+      if (hasChanged) {
+        saveMenuItems(migrated);
+      }
+      return migrated;
     }
   } catch (err) {
     console.error('Error loading stored menu items:', err);

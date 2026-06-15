@@ -1,5 +1,6 @@
+import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Clock, Star, Flame, Salad, Landmark, ShieldCheck, Dumbbell, Award, ChevronRight } from 'lucide-react';
+import { X, Clock, Star, Flame, Salad, Landmark, ShieldCheck, Dumbbell, Award, ChevronRight, Heart } from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface ItemDetailDrawerProps {
@@ -7,9 +8,18 @@ interface ItemDetailDrawerProps {
   onClose: () => void;
   onSelectRelated: (item: MenuItem) => void;
   menuItems: MenuItem[];
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string, e?: React.MouseEvent) => void;
 }
 
-export default function ItemDetailDrawer({ item, onClose, onSelectRelated, menuItems }: ItemDetailDrawerProps) {
+export default function ItemDetailDrawer({ 
+  item, 
+  onClose, 
+  onSelectRelated, 
+  menuItems,
+  isFavorite = false,
+  onToggleFavorite
+}: ItemDetailDrawerProps) {
   if (!item) return null;
 
   // Get related items (same category, excluding current item) from live list
@@ -58,6 +68,18 @@ export default function ItemDetailDrawer({ item, onClose, onSelectRelated, menuI
               aria-label="Close details"
             >
               <X className="w-5 h-5" />
+            </button>
+
+            {/* Float Favorite Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleFavorite) onToggleFavorite(item.id, e);
+              }}
+              className="absolute top-4 right-14 z-10 p-2 bg-neutral-900/60 hover:bg-neutral-900/90 active:scale-95 rounded-full backdrop-blur-md transition-all border border-white/20"
+              aria-label={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            >
+              <Heart className={`w-5 h-5 ${isFavorite ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
             </button>
 
             {/* Preparations time pill */}
