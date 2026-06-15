@@ -1,98 +1,236 @@
-import { Coffee, Flame, Phone, MapPin, Clock, Compass, Key } from 'lucide-react';
+import React, { useState } from 'react';
+import { Flame, Sun, Moon, ShoppingBag, Menu, X, Key, Compass, Heart, Phone, MapPin, Clock } from 'lucide-react';
 
 interface HeaderProps {
-  onSelectCategory: (cat: string) => void;
-  activeCategory: string;
+  isDarkMode: boolean;
+  onToggleDarkMode: () => void;
+  cartCount: number;
+  onOpenCart: () => void;
+  favoriteCount: number;
+  onToggleFavoritesOnly: (show: boolean) => void;
+  showOnlyFavorites: boolean;
   onOpenAdmin: () => void;
+  onJumpToSection: (section: 'home' | 'menu' | 'contact') => void;
 }
 
-export default function Header({ onSelectCategory, activeCategory, onOpenAdmin }: HeaderProps) {
-  return (
-    <header className="bg-white border-b border-neutral-100 flex flex-col pt-3 pb-2 px-4 sticky top-0 z-40 shadow-xs">
-      
-      {/* Upper info band - responsive visibility */}
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between text-[11px] text-neutral-500 font-bold border-b border-neutral-50 pb-2 mb-2 hidden sm:flex font-mono">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5 hover:text-rose-600 transition-colors">
-            <MapPin className="w-3.5 h-3.5 text-rose-500" />
-            <span>Bole Road, Addis Ababa, Ethiopia (Behind Cameroon St.)</span>
-          </span>
-          <span className="text-neutral-200">|</span>
-          <span className="flex items-center gap-1.5 hover:text-amber-500 transition-colors">
-            <Clock className="w-3.5 h-3.5 text-amber-500" />
-            <span>Daily: 7:00 AM - 11:00 PM</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-neutral-400 font-medium uppercase mr-1">Hotline:</span>
-          <span className="flex items-center gap-1 text-neutral-850 bg-rose-50 text-rose-700 px-2.5 py-0.5 rounded-full border border-rose-100 font-mono text-xs">
-            <Phone className="w-3 h-3" />
-            +251 91 123 4567
-          </span>
-        </div>
-      </div>
+export default function Header({
+  isDarkMode,
+  onToggleDarkMode,
+  cartCount,
+  onOpenCart,
+  favoriteCount,
+  onToggleFavoritesOnly,
+  showOnlyFavorites,
+  onOpenAdmin,
+  onJumpToSection,
+}: HeaderProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-      {/* Primary Brand Navigation container */}
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+  // Custom hamburger menu action
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const selectMobileNav = (action: () => void) => {
+    action();
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <header className={`sticky top-0 z-40 transition-colors duration-300 border-b ${
+      isDarkMode 
+        ? 'bg-[#0f0f11]/90 backdrop-blur-md border-neutral-800/80 text-white' 
+        : 'bg-white/90 backdrop-blur-md border-neutral-100/90 text-neutral-900'
+    } shadow-xs`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         
-        {/* Brand Logo & Name */}
-        <div className="flex items-center gap-3 select-none">
+        {/* Left Section: Logo & Brand name */}
+        <div 
+          onClick={() => onJumpToSection('menu')}
+          className="flex items-center gap-2.5 cursor-pointer select-none group"
+        >
           <div className="relative flex items-center justify-center">
-            {/* Logo Icon Ring */}
-            <div className="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center border-2 border-amber-400 shadow-md">
-              <Flame className="w-5 h-5 text-amber-400 fill-amber-400 animate-pulse" />
+            {/* Logo Icon Ring with custom Orange Gradient */}
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#ff6b00] to-amber-500 flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
+              <Flame className="w-5 h-5 text-white fill-white/10 animate-pulse" />
             </div>
-            {/* Mini decorative star badge */}
-            <span className="absolute -top-1 -right-1 bg-amber-400 text-neutral-950 font-black text-[8px] px-1 rounded-full border border-white font-mono">
-              ★
+            {/* Mini hot indicator badge */}
+            <span className="absolute -top-[1px] -right-[1px] bg-red-600 text-white text-[7px] font-black px-1 rounded-full animate-bounce">
+              HI
             </span>
           </div>
           <div>
             <div className="flex items-baseline gap-1">
-              <h1 className="text-lg sm:text-xl font-black text-neutral-900 tracking-tighter leading-none">
-                WOW<span className="text-rose-600 font-black">BURGER</span>
-              </h1>
-              <span className="text-[9px] font-black uppercase tracking-widest text-amber-500 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded-sm shrink-0">
+              <span className="text-lg sm:text-xl font-black tracking-tight uppercase leading-none">
+                Wow<span className="text-[#ff6b00]">Burger</span>
+              </span>
+              <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-wider text-white bg-[#ff6b00] px-1.5 py-0.5 rounded-sm shrink-0">
                 café
               </span>
             </div>
-            <p className="text-[9px] uppercase tracking-widest text-neutral-400 font-black leading-none mt-1 font-mono">
-              gourmet & artisan roast
+            <p className={`text-[8px] uppercase tracking-widest font-black leading-none mt-1 font-mono ${
+              isDarkMode ? 'text-neutral-400' : 'text-neutral-500'
+            }`}>
+              artisan gourmet blend
             </p>
           </div>
         </div>
 
-        {/* Action Link to Jump to Menu Grid */}
-        <div className="flex items-center gap-2">
-          {/* Quick Phone Call Hotline for mobile viewports */}
-          <a
-            href="tel:+251911234567"
-            className="flex sm:hidden items-center justify-center p-2 rounded-full text-rose-600 hover:bg-rose-50 border border-rose-100 active:scale-95 transition-all"
-            title="Call Restaurant"
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-6 text-sm font-bold">
+          <button 
+            onClick={() => onJumpToSection('menu')} 
+            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer`}
           >
-            <Phone className="w-4 h-4" />
-          </a>
+            Our Menu
+          </button>
+          <button 
+            onClick={() => onToggleFavoritesOnly(false)} 
+            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer ${
+              !showOnlyFavorites ? 'text-[#ff6b00]' : ''
+            }`}
+          >
+            Explore
+          </button>
+          <button 
+            onClick={() => onToggleFavoritesOnly(true)}
+            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer flex items-center gap-1.5 ${
+              showOnlyFavorites ? 'text-[#ff6b00]' : ''
+            }`}
+          >
+            <Heart className="w-3.5 h-3.5 fill-current" />
+            <span>My Favorites ({favoriteCount})</span>
+          </button>
+          <button 
+            onClick={() => onJumpToSection('contact')} 
+            className="transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer"
+          >
+            Store info
+          </button>
+        </nav>
 
-          {/* Admin Back-office trigger button */}
+        {/* Right Section: Action utilities */}
+        <div className="flex items-center gap-2 sm:gap-3.5">
+          
+          {/* ManagerPortal key shortcut */}
           <button
             onClick={onOpenAdmin}
-            className="flex items-center gap-1.5 bg-rose-50 border-rose-100 hover:bg-rose-100 text-rose-700 text-xs font-bold px-3 py-2 rounded-xl transition-all border shrink-0"
-            title="Access Back-office Admin Console"
+            className={`hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold font-mono uppercase tracking-wider transition-all border ${
+              isDarkMode 
+                ? 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 text-neutral-300' 
+                : 'bg-neutral-50 border-neutral-200 hover:bg-neutral-100 text-neutral-700'
+            }`}
+            title="Open Admin Manager Portal"
           >
-            <Key className="w-3.5 h-3.5 text-rose-600 fill-rose-50/10" />
-            <span className="hidden xs:inline">Manager Portal</span>
+            <Key className="w-3.5 h-3.5 text-[#ff6b00]" />
+            <span>Portal</span>
           </button>
 
+          {/* Theme Mode Toggle Button */}
           <button
-            onClick={() => onSelectCategory('burgers')}
-            className="flex items-center gap-1.5 bg-neutral-900 hover:bg-rose-600 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-md active:bg-rose-700 font-sans border border-neutral-800 shrink-0"
+            onClick={onToggleDarkMode}
+            className={`p-2 rounded-full cursor-pointer transition-theme relative active:scale-90 border ${
+              isDarkMode 
+                ? 'bg-neutral-900 border-neutral-800 hover:bg-neutral-850 text-amber-400' 
+                : 'bg-neutral-50 border-neutral-200 hover:bg-neutral-100 text-[#ff6b00]'
+            }`}
+            aria-label="Toggle dark/light website mode"
+            id="theme-toggle-btn"
           >
-            <Compass className="w-3.5 h-3.5 text-amber-400" />
-            <span>Explore Menu</span>
+            {isDarkMode ? <Sun className="w-4 h-4 sm:w-5 h-5" /> : <Moon className="w-4 h-4 sm:w-5 h-5" />}
+          </button>
+
+          {/* Cart Bag Badge with nice indicator */}
+          <button
+            onClick={onOpenCart}
+            className="p-2 sm:p-2.5 rounded-full cursor-pointer transition-all relative active:scale-90 bg-gradient-to-tr from-[#ff6b00] to-orange-500 hover:shadow-lg text-white"
+            aria-label="Open ordering checkout cart"
+            id="cart-trigger-btn"
+          >
+            <ShoppingBag className="w-4 h-4 sm:w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-white text-[#ff6b00] text-[9.5px] font-black w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full flex items-center justify-center shadow-md animate-bounce">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
+          {/* Circular Hamburger Mobile Menu Trigger */}
+          <button
+            onClick={toggleMobileMenu}
+            className={`md:hidden p-2 rounded-full cursor-pointer transition-all active:scale-90 border ${
+              isDarkMode 
+                ? 'bg-neutral-950 border-neutral-800 text-white hover:bg-neutral-900' 
+                : 'bg-white border-neutral-200 text-neutral-900 hover:bg-neutral-50'
+            }`}
+            aria-label="Toggle Navigation Options"
+            id="burger-hamburger-btn"
+          >
+            {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
-
       </div>
+
+      {/* Slide-out Mobile Hamburger Navigation Overlay */}
+      {isMobileMenuOpen && (
+        <div className={`md:hidden fixed inset-x-0 top-16 z-30 transition-all border-b glass-panel py-6 px-4 space-y-4 shadow-2xl ${
+          isDarkMode 
+            ? 'bg-[#121216]/95 border-neutral-800 text-white' 
+            : 'bg-white/95 border-neutral-200 text-neutral-900'
+        }`}>
+          <div className="grid grid-cols-2 gap-3 pb-2">
+            <button
+              onClick={() => selectMobileNav(() => {
+                onToggleFavoritesOnly(false);
+                onJumpToSection('menu');
+              })}
+              className={`flex items-center gap-2 p-3 rounded-2xl border text-xs font-bold uppercase transition-all ${
+                isDarkMode ? 'bg-neutral-900/40 border-neutral-800 hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-200 hover:bg-neutral-100'
+              }`}
+            >
+              <Compass className="w-4 h-4 text-[#ff6b00]" />
+              <span>Our Menu</span>
+            </button>
+            <button
+              onClick={() => selectMobileNav(() => {
+                onToggleFavoritesOnly(true);
+                onJumpToSection('menu');
+              })}
+              className={`flex items-center gap-2 p-3 rounded-2xl border text-xs font-bold uppercase transition-all ${
+                isDarkMode ? 'bg-neutral-900/40 border-neutral-800 hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-200 hover:bg-neutral-100'
+              }`}
+            >
+              <Heart className="w-4 h-4 text-red-500 fill-red-500/10" />
+              <span>Favorites ({favoriteCount})</span>
+            </button>
+          </div>
+
+          {/* Quick Info & Portal */}
+          <div className="pt-2 border-t border-dashed border-neutral-800/20 space-y-3.5">
+            <button
+              onClick={() => selectMobileNav(onOpenAdmin)}
+              className="w-full flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-orange-500/15 to-amber-500/5 border border-orange-500/20 text-xs font-extrabold uppercase text-[#ff6b00]"
+            >
+              <span className="flex items-center gap-2">
+                <Key className="w-4 h-4" />
+                <span>Admin Manager Portal</span>
+              </span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-orange-500 text-white">Go</span>
+            </button>
+
+            <div className="text-[10px] text-neutral-400 font-bold space-y-1.5 px-1 pt-1">
+              <p className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#ff6b00] shrink-0" />
+                <span>Bole Road, Addis Ababa, Ethiopia</span>
+              </p>
+              <p className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>Daily: 7:00 AM - 11:00 PM</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

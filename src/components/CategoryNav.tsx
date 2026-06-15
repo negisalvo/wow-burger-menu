@@ -1,69 +1,88 @@
+import React from 'react';
 import * as Icons from 'lucide-react';
 import { Category, CategoryId } from '../types';
 
 interface CategoryNavProps {
   categories: Category[];
-  activeCategory: CategoryId;
-  onSelectCategory: (id: CategoryId) => void;
+  activeCategory: CategoryId | 'all';
+  onSelectCategory: (id: CategoryId | 'all') => void;
+  isDarkMode: boolean;
 }
 
-export default function CategoryNav({ categories, activeCategory, onSelectCategory }: CategoryNavProps) {
+export default function CategoryNav({
+  categories,
+  activeCategory,
+  onSelectCategory,
+  isDarkMode,
+}: CategoryNavProps) {
   
   // Helper to dynamically match icons from Lucide safely
   const renderIcon = (iconName: string, isActive: boolean) => {
-    // Falls back to generic Sparkles if named icon is not exported by some chance
     const LucideIcon = (Icons as any)[iconName] || Icons.Sparkles;
-    const iconColorClass = isActive ? 'text-rose-600' : 'text-neutral-500 group-hover:text-rose-600';
-    return <LucideIcon className={`w-4 h-4 sm:w-5 h-5 transition-colors ${iconColorClass}`} />;
+    return <LucideIcon className={`w-3.5 h-3.5 sm:w-4 h-4 transition-colors ${
+      isActive ? 'text-white' : 'text-neutral-500'
+    }`} />;
   };
 
+  // Build list of category options including a custom "All" option
+  const allCategoryPills = [
+    { id: 'all', name: 'All Selections', icon: 'Compass', count: 0 },
+    ...categories.map(c => {
+      // Shorten names for clean pill design
+      let name = c.name;
+      if (c.id === 'fries-sides') name = 'Fries';
+      if (c.id === 'coffee') name = 'Coffee';
+      if (c.id === 'drinks') name = 'Drinks';
+      if (c.id === 'burgers') name = 'Burgers';
+      return { id: c.id, name, icon: c.icon, count: c.count };
+    })
+  ];
+
   return (
-    <div className="bg-white border-b border-neutral-100 flex flex-col pt-6 pb-2 px-4 sticky top-[69px] sm:top-[103px] z-30 shadow-xs">
-      <div className="max-w-7xl mx-auto w-full space-y-3.5">
+    <div className={`sticky top-16 sm:top-20 z-30 transition-colors duration-300 border-b py-3.5 px-4 scrollbar-hide select-none ${
+      isDarkMode 
+        ? 'bg-[#0f0f11]/95 text-white border-neutral-800/80 shadow-md' 
+        : 'bg-white/95 text-neutral-900 border-neutral-100/90 shadow-xs'
+    }`}>
+      <div className="max-w-7xl mx-auto w-full space-y-2.5">
         
-        {/* Navigation title with counts */}
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+        {/* Navigation title with orange subtitle */}
+        <div className="flex items-center justify-between pb-1 sm:pb-2">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-black text-neutral-400 uppercase tracking-widest leading-none">
-              gourmet selections
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#ff6b00] bg-orange-500/10 px-2 py-0.5 rounded">
+              Our Menu
+            </span>
+            <h3 className="text-sm font-black uppercase tracking-wider leading-none">
+              Explore & Enjoy
             </h3>
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
           </div>
-          <p className="text-[11px] font-semibold text-neutral-400">
-            Swipe left or right to explore all categories • Prices in ETB
-          </p>
+          <span className="hidden sm:inline text-[10px] text-neutral-400 font-bold uppercase tracking-widest font-mono">
+            Bole Lounge Standard
+          </span>
         </div>
 
-        {/* Scrollable Categories Row */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-2.5 -mx-4 px-4 snap-x touch-pan-x">
-          {categories.map((cat) => {
+        {/* Scrollable Categories Pill row */}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 snap-x touch-pan-x">
+          {allCategoryPills.map((cat) => {
             const isActive = cat.id === activeCategory;
             return (
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`group flex items-center gap-2.5 px-4 py-3 rounded-2xl border transition-all text-xs font-bold whitespace-nowrap snap-start shrink-0 cursor-pointer active:scale-95 ${
+                className={`group flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 uppercase whitespace-nowrap snap-start shrink-0 cursor-pointer active:scale-95 border ${
                   isActive
-                    ? 'bg-rose-500/10 text-rose-700 border-rose-400/50 shadow-xs'
-                    : 'bg-neutral-50 hover:bg-neutral-100/50 text-neutral-600 border-neutral-200/60'
+                    ? 'bg-[#ff6b00] text-white border-[#ff6b00] shadow-md shadow-orange-500/20'
+                    : isDarkMode
+                      ? 'bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border-neutral-800'
+                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600 border-neutral-200/50'
                 }`}
               >
-                {/* Simulated Icon circle frame */}
-                <div className={`p-1.5 rounded-xl transition-colors ${
-                  isActive ? 'bg-white' : 'bg-neutral-100 group-hover:bg-neutral-200/50'
-                }`}>
-                  {renderIcon(cat.icon, isActive)}
-                </div>
+                {/* Embedded Lucide Icon */}
+                {renderIcon(cat.icon, isActive)}
 
-                {/* Name & Count */}
-                <div className="flex flex-col items-start leading-none gap-1">
-                  <span className={`${isActive ? 'text-neutral-900 font-extrabold' : 'text-neutral-800 font-bold'}`}>
-                    {cat.name}
-                  </span>
-                  <span className="text-[9px] font-semibold text-neutral-400 truncate">
-                    {cat.count} curated items
-                  </span>
-                </div>
+                <span className="tracking-wide">
+                  {cat.name}
+                </span>
               </button>
             );
           })}

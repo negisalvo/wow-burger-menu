@@ -13,6 +13,13 @@ export const CATEGORIES: Category[] = [
     description: 'Freshly ground premium beef patties flame-grilled to perfection'
   },
   {
+    id: 'chicken',
+    name: 'Crispy Chicken',
+    count: 2,
+    icon: 'Flame',
+    description: 'Crispy hand-breaded golden chicken tenders and spicy buffalo wings'
+  },
+  {
     id: 'fries-sides',
     name: 'Fries & Sides',
     count: 3,
@@ -419,5 +426,46 @@ export const MENU_ITEMS: MenuItem[] = [
     },
     rating: 4.88,
     reviewCount: 199
+  },
+  {
+    id: 'crispy-chicken-royal',
+    name: 'Royal Crispy Chicken Burger',
+    category: 'chicken',
+    price: 490,
+    description: 'Ultra-crispy double-fried local chicken breast, smothered in spicy habanero mayo, crisp house pickles, shredded cabbage slaw on a toasted, buttered brioche bun.',
+    imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?auto=format&fit=crop&w=600&q=80',
+    ingredients: ['Crispy local chicken breast', 'Buttered brioche bun', 'Piquant habanero mayo', 'Shredded cabbage vinegar slaw', 'Tangy garlic pickles'],
+    estimatedTime: '10-12 mins',
+    nutrition: {
+      calories: 610,
+      protein: '35g',
+      carbs: '54g',
+      fat: '26g'
+    },
+    tags: {
+      isSignature: true,
+      isSpicy: true
+    },
+    rating: 4.9,
+    reviewCount: 184
+  },
+  {
+    id: 'bole-gold-tenders',
+    name: 'Bole Gold Chicken Tenders',
+    category: 'chicken',
+    price: 360,
+    description: 'Golden, extra-crunchy buttermilk chicken tender strips seasoned with local aromatic spices, served with a double portion of smoky chipotle dipping sauce.',
+    imageUrl: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80',
+    ingredients: ['Buttermilk tender chicken strips', 'Crispy spiced batter blend', 'Aromatic local rosemary salt', 'Smoky house chipotle dip'],
+    estimatedTime: '8-10 mins',
+    nutrition: {
+      calories: 450,
+      protein: '28g',
+      carbs: '32g',
+      fat: '18g'
+    },
+    tags: {},
+    rating: 4.8,
+    reviewCount: 120
   }
 ];

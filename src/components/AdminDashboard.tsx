@@ -71,6 +71,28 @@ export default function AdminDashboard({
     hasLocalTouch: false,
   });
 
+  // Refs for auto-scrolling to forms when edited/opened
+  const categoryFormRef = React.useRef<HTMLFormElement>(null);
+  const itemFormRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (showCategoryForm) {
+      const timer = setTimeout(() => {
+        categoryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [showCategoryForm, editingCategory]);
+
+  React.useEffect(() => {
+    if (showItemForm) {
+      const timer = setTimeout(() => {
+        itemFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [showItemForm, editingItem]);
+
   // Handle Mockup Authentication
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -612,7 +634,7 @@ export default function AdminDashboard({
 
             {/* CATEGORY DIALOG FORM CONDITIONAL */}
             {showCategoryForm && (
-              <form onSubmit={handleCategorySubmit} className="bg-white p-5 sm:p-6 rounded-3xl border border-rose-200/50 space-y-4 shadow-xl">
+              <form ref={categoryFormRef} onSubmit={handleCategorySubmit} className="bg-white p-5 sm:p-6 rounded-3xl border border-rose-200/50 space-y-4 shadow-xl">
                 <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
                   <h4 className="font-extrabold text-sm uppercase text-rose-600">
                     {editingCategory ? 'Edit Category Details' : 'Create New Tab Category'}
@@ -828,7 +850,7 @@ export default function AdminDashboard({
 
             {/* EXPANDED NEW SELECTS FORM */}
             {showItemForm && (
-              <form onSubmit={handleItemSubmit} className="bg-white p-5 sm:p-6 rounded-3xl border border-rose-200/50 space-y-5 shadow-xl">
+              <form ref={itemFormRef} onSubmit={handleItemSubmit} className="bg-white p-5 sm:p-6 rounded-3xl border border-rose-200/50 space-y-5 shadow-xl">
                 <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
                   <h4 className="font-extrabold text-sm uppercase text-rose-650 flex items-center gap-1">
                     <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
