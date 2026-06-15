@@ -1,0 +1,6 @@
+{
+  "name": "Wow Burger Menu",
+  "description": "A premium, modern, mobile-first digital menu website for Wow Burger in Addis Ababa, Ethiopia - blending gourmet burgers, specialty coffee, milkshakes, and delicious desserts with an interactive mockup viewer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
