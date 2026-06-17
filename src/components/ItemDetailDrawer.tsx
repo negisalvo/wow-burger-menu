@@ -62,6 +62,10 @@ export default function ItemDetailDrawer({
               alt={item.name}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+              }}
             />
             {/* Dark vignette gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
@@ -277,7 +281,12 @@ export default function ItemDetailDrawer({
                         <img
                           src={relItem.imageUrl}
                           alt={relItem.name}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                          }}
                         />
                       </div>
                       <div className="flex flex-col justify-center min-w-0">

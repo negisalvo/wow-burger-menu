@@ -1102,8 +1102,9 @@ export default function AdminDashboard({
 
             {/* Core tabular list displays of menu items mapping out row by row */}
             <div className="bg-white rounded-3xl border border-neutral-150/80 shadow-xs overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse font-sans font-semibold text-neutral-700">
+              {/* Responsive Scrollable Tabular View */}
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse font-sans font-semibold text-neutral-700 font-sans min-w-[768px]">
                   <thead className="bg-neutral-50 text-[10px] uppercase text-neutral-400 font-bold border-b border-neutral-150 tracking-wider">
                     <tr>
                       <th className="p-4 pl-6">Title & Category</th>
@@ -1125,7 +1126,12 @@ export default function AdminDashboard({
                               <img
                                 src={item.imageUrl}
                                 alt={item.name}
+                                referrerPolicy="no-referrer"
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                                }}
                               />
                             </div>
                             <div>

@@ -22,7 +22,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'fries-sides',
     name: 'Fries & Sides',
-    count: 3,
+    count: 2,
     icon: 'Layers',
     description: 'Crispy hand-cut sides and mouth-watering bites'
   },
@@ -36,7 +36,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'drinks',
     name: 'Soft Drinks',
-    count: 3,
+    count: 4,
     icon: 'CupSoda',
     description: 'Refreshing custom crafts and sparkling botanical soda'
   },
@@ -187,27 +187,6 @@ export const MENU_ITEMS: MenuItem[] = [
     rating: 4.7,
     reviewCount: 154
   },
-  {
-    id: 'onion-halos',
-    name: 'Crunchy Onion Halos',
-    category: 'fries-sides',
-    price: 220,
-    description: 'Thick, sweet red onion rings freshly cut and drenched in our signature microbrew-infused crispy batter, topped with a crisp panko-crumb finish and smoked paprika relish.',
-    imageUrl: 'https://images.unsplash.com/photo-1639024471283-2bc7b3c6a267?auto=format&fit=crop&w=600&q=80',
-    ingredients: ['Giant sweet red onions', 'Wow specialty wheat craft batter', 'Golden crispy Japanese panko crumbs', 'Smoked paprika dipping relish'],
-    estimatedTime: '8 mins',
-    nutrition: {
-      calories: 270,
-      protein: '3g',
-      carbs: '34g',
-      fat: '12g'
-    },
-    tags: {
-      isVegan: true
-    },
-    rating: 4.5,
-    reviewCount: 88
-  },
 
   // coffee
   {
@@ -239,7 +218,7 @@ export const MENU_ITEMS: MenuItem[] = [
     category: 'coffee',
     price: 140,
     description: 'A robust double-shot extracted from our custom medium-dark house espresso blend, stained with a single micro-foam dollop of creamy steamed organic whole milk. Rich dark chocolate profile.',
-    imageUrl: 'https://images.unsplash.com/photo-1485808191679-5f63bbd0a11a?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1570968915860-54d5c301fc9f?auto=format&fit=crop&w=600&q=80',
     ingredients: ['House dry-roasted espresso beans', 'Steamed local organic whole milk', 'Dense micro-surface foam'],
     estimatedTime: '3-4 mins',
     nutrition: {
@@ -340,6 +319,25 @@ export const MENU_ITEMS: MenuItem[] = [
     rating: 4.6,
     reviewCount: 78
   },
+  {
+    id: 'coca-cola',
+    name: 'Coca-Cola Can',
+    category: 'drinks',
+    price: 80,
+    description: 'Perfectly chilled classic Coca-Cola, served with a fresh lemon wedge and clear ice spheres.',
+    imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80',
+    ingredients: ['Carbonated purified water', 'Real cane sugar', 'Caramel color', 'Phosphoric acid', 'Natural flavors'],
+    estimatedTime: '1-2 mins',
+    nutrition: {
+      calories: 140,
+      protein: '0g',
+      carbs: '39g',
+      fat: '0g'
+    },
+    tags: {},
+    rating: 4.8,
+    reviewCount: 154
+  },
 
   // shakes
   {
@@ -426,28 +424,6 @@ export const MENU_ITEMS: MenuItem[] = [
     },
     rating: 4.88,
     reviewCount: 199
-  },
-  {
-    id: 'crispy-chicken-royal',
-    name: 'Royal Crispy Chicken Burger',
-    category: 'chicken',
-    price: 490,
-    description: 'Ultra-crispy double-fried local chicken breast, smothered in spicy habanero mayo, crisp house pickles, shredded cabbage slaw on a toasted, buttered brioche bun.',
-    imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?auto=format&fit=crop&w=600&q=80',
-    ingredients: ['Crispy local chicken breast', 'Buttered brioche bun', 'Piquant habanero mayo', 'Shredded cabbage vinegar slaw', 'Tangy garlic pickles'],
-    estimatedTime: '10-12 mins',
-    nutrition: {
-      calories: 610,
-      protein: '35g',
-      carbs: '54g',
-      fat: '26g'
-    },
-    tags: {
-      isSignature: true,
-      isSpicy: true
-    },
-    rating: 4.9,
-    reviewCount: 184
   },
   {
     id: 'bole-gold-tenders',

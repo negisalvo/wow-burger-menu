@@ -366,6 +366,10 @@ export default function App() {
                       alt={item.name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                      }}
                     />
                     <span className="absolute top-3 right-3 bg-[#ff6b00] text-white text-[9.5px] font-black px-2.5 py-1 rounded-md shadow-md uppercase tracking-wider flex items-center gap-1">
                       <Sparkles className="w-3.5 h-3.5 fill-white/10" />

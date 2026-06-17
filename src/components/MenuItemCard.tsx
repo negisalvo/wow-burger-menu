@@ -53,6 +53,10 @@ export default function MenuItemCard({
           alt={item.name}
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+          }}
         />
         
         {/* Subtle dark bottom gradient on image */}

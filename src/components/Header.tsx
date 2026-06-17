@@ -76,38 +76,7 @@ export default function Header({
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-bold">
-          <button 
-            onClick={() => onJumpToSection('menu')} 
-            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer`}
-          >
-            Our Menu
-          </button>
-          <button 
-            onClick={() => onToggleFavoritesOnly(false)} 
-            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer ${
-              !showOnlyFavorites ? 'text-[#ff6b00]' : ''
-            }`}
-          >
-            Explore
-          </button>
-          <button 
-            onClick={() => onToggleFavoritesOnly(true)}
-            className={`transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer flex items-center gap-1.5 ${
-              showOnlyFavorites ? 'text-[#ff6b00]' : ''
-            }`}
-          >
-            <Heart className="w-3.5 h-3.5 fill-current" />
-            <span>My Favorites ({favoriteCount})</span>
-          </button>
-          <button 
-            onClick={() => onJumpToSection('contact')} 
-            className="transition-colors uppercase tracking-wider text-xs hover:text-[#ff6b00] cursor-pointer"
-          >
-            Store info
-          </button>
-        </nav>
+        {/* Desktop Navigation Links Removed */}
 
         {/* Right Section: Action utilities */}
         <div className="flex items-center gap-2 sm:gap-3.5">
