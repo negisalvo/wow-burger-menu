@@ -1103,8 +1103,8 @@ export default function AdminDashboard({
               </form>
             )}
 
-            {/* Core tabular list displays of menu items mapping out row by row */}
-            <div className="bg-white rounded-3xl border border-neutral-150/80 shadow-xs overflow-hidden">
+            {/* Desktop Tabular View (hidden on mobile, shown on md and larger) */}
+            <div className="hidden md:block bg-white rounded-3xl border border-neutral-150/80 shadow-xs overflow-hidden">
               {/* Responsive Scrollable Tabular View */}
               <div className="w-full overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse font-sans font-semibold text-neutral-700 font-sans min-w-[768px]">
@@ -1234,6 +1234,103 @@ export default function AdminDashboard({
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* Mobile List View (rendered on smaller screens, no horizontal slide required) */}
+            <div className="block md:hidden space-y-4">
+              {filteredDisplayItems.map(item => (
+                <div key={item.id} className="bg-white rounded-2xl border border-neutral-150/80 p-4 shadow-xs flex flex-col gap-3">
+                  <div className="flex gap-3">
+                    {/* Item Image */}
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-neutral-150 shrink-0">
+                      <img
+                        src={getImageSrc(item.imageUrl)}
+                        alt={item.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                        }}
+                      />
+                    </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-neutral-900 uppercase truncate">
+                        {item.name}
+                      </p>
+                      <span className="text-[10px] text-rose-600 font-extrabold uppercase block mt-0.5">
+                        {categories.find(c => c.id === item.category)?.name || item.category}
+                      </span>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1.5 text-neutral-500 font-semibold text-[11px]">
+                        <span className="text-xs font-black text-neutral-900 font-mono">
+                          {item.price} <span className="text-[9px] text-rose-600 font-sans">ETB</span>
+                        </span>
+                        <span className="text-neutral-300">•</span>
+                        <span className="font-mono">{item.nutrition?.calories || 400} Cal</span>
+                        <span className="text-neutral-300">•</span>
+                        <span>⏰ {item.estimatedTime || '—'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Highlights/Tags */}
+                  <div className="flex flex-wrap gap-1">
+                    {item.tags.isSignature && (
+                      <span className="bg-amber-400 text-neutral-900 text-[8px] font-black px-1.5 py-0.5 rounded uppercase">
+                        Signature
+                      </span>
+                    )}
+                    {item.tags.isSpicy && (
+                      <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">
+                        Spicy
+                      </span>
+                    )}
+                    {item.tags.isVegan && (
+                      <span className="bg-emerald-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">
+                        Vegan
+                      </span>
+                    )}
+                    {item.tags.hasLocalTouch && (
+                      <span className="bg-neutral-800 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded">
+                        🇪🇹 Ethiopian
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Ingredients Preview */}
+                  <div className="text-[11px] text-neutral-550 border-t border-neutral-100 pt-2 font-normal">
+                    <span className="font-bold text-neutral-700">Ingredients: </span>
+                    {item.ingredients.join(', ')}
+                  </div>
+
+                  {/* Actions (Prominent touch targets for mobile) */}
+                  <div className="grid grid-cols-2 gap-2 border-t border-neutral-100 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => handleEditItemToggle(item)}
+                      className="py-2.5 bg-neutral-50 border border-neutral-200 hover:border-amber-400 hover:bg-amber-50 rounded-xl text-neutral-700 hover:text-neutral-900 transition-all text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Edit Item</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteItem(item.id)}
+                      className="py-2.5 bg-neutral-50 border border-neutral-200 hover:border-red-400 hover:bg-red-50 rounded-xl text-neutral-500 hover:text-red-700 transition-all text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {filteredDisplayItems.length === 0 && (
+                <div className="bg-white rounded-2xl border border-neutral-150 p-8 text-center text-neutral-400 font-bold text-xs">
+                  No menu selections found matching the current search criteria.
+                </div>
+              )}
             </div>
 
           </div>
