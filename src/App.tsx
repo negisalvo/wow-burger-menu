@@ -20,6 +20,19 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
+  // Pull remote data dynamically on mount if Supabase keys are active in environment secrets
+  useEffect(() => {
+    async function pullRemoteDatabase() {
+      const { syncFromSupabase } = await import('./data/store');
+      const data = await syncFromSupabase();
+      if (data) {
+        setCategories(data.categories);
+        setMenuItems(data.menuItems);
+      }
+    }
+    pullRemoteDatabase();
+  }, []);
+
   // Theme support: defaulting to the demanded dark theme (#0f0f11 background)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
