@@ -1,3 +1,5 @@
+"use client";
+
 import { MapPin, Phone, Clock, Mail, Instagram, Compass, Heart, Award } from 'lucide-react';
 
 interface FooterProps {

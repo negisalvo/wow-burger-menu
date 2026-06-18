@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import { Star, Clock, Flame, Salad, Landmark, Award, Eye, Heart, ShoppingCart, Plus } from 'lucide-react';
 import { MenuItem } from '../types';
+import { getImageSrc } from '../lib/utils';
 
 interface MenuItemCardProps {
   key?: string | number;
@@ -49,7 +52,7 @@ export default function MenuItemCard({
       {/* Upper image with beautiful hover zoom */}
       <div className="relative h-28 xs:h-36 sm:h-48 w-full overflow-hidden bg-neutral-900 shrink-0">
         <img
-          src={item.imageUrl}
+          src={getImageSrc(item.imageUrl)}
           alt={item.name}
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"

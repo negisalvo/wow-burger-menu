@@ -1,5 +1,6 @@
 import { Category, MenuItem } from '../types';
 import { CATEGORIES as DEFAULT_CATEGORIES, MENU_ITEMS as DEFAULT_MENU_ITEMS } from './menu';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STORAGE_KEYS = {
   CATEGORIES: 'wow_categories',
@@ -122,16 +123,37 @@ export function getStoredMenuItems(): MenuItem[] {
   return DEFAULT_MENU_ITEMS;
 }
 
-// Save categories directly to local storage
+// Save categories directly to local storage and sync to Supabase
 export function saveCategories(categories: Category[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+    
+    if (isSupabaseConfigured && supabase) {
+      (async () => {
+        // Upsert categories
+        for (const cat of categories) {
+          await supabase.from('wow_categories').upsert({
+            id: cat.id,
+            name: cat.name,
+            count: cat.count,
+            icon: cat.icon,
+            description: cat.description
+          });
+        }
+        // Delete any obsolete categories
+        const catIds = categories.map(c => c.id);
+        if (catIds.length > 0) {
+          const list = catIds.map(id => `'${id}'`).join(',');
+          await supabase.from('wow_categories').delete().not('id', 'in', `(${list})`);
+        }
+      })().catch(err => console.error('Failed to sync categories to Supabase:', err));
+    }
   } catch (err) {
     console.error('Failed to save categories to local storage', err);
   }
 }
 
-// Save menu items directly to local storage
+// Save menu items directly to local storage and sync to Supabase
 export function saveMenuItems(items: MenuItem[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.MENU_ITEMS, JSON.stringify(items));
@@ -161,6 +183,35 @@ export function saveMenuItems(items: MenuItem[]): void {
     }));
 
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(updatedCategories));
+
+    if (isSupabaseConfigured && supabase) {
+      (async () => {
+        // Upsert all items
+        for (const item of items) {
+          const img = typeof item.imageUrl === 'object' && item.imageUrl !== null ? (item.imageUrl as any).src : item.imageUrl;
+          await supabase.from('wow_menu_items').upsert({
+            id: item.id,
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            description: item.description,
+            imageUrl: img,
+            ingredients: item.ingredients,
+            estimatedTime: item.estimatedTime || '10-15 mins',
+            nutrition: item.nutrition || {},
+            tags: item.tags || {},
+            rating: item.rating || 4.5,
+            reviewCount: item.reviewCount || 0
+          });
+        }
+        // Delete items no longer in the set
+        const itemIds = items.map(i => i.id);
+        if (itemIds.length > 0) {
+          const list = itemIds.map(id => `'${id}'`).join(',');
+          await supabase.from('wow_menu_items').delete().not('id', 'in', `(${list})`);
+        }
+      })().catch(err => console.error('Failed to sync menu items to Supabase:', err));
+    }
   } catch (err) {
     console.error('Failed to save menu items to local storage', err);
   }
@@ -180,9 +231,136 @@ export function resetToDefaults(): { categories: Category[], menuItems: MenuItem
   try {
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(cats));
     localStorage.setItem(STORAGE_KEYS.MENU_ITEMS, JSON.stringify(items));
+
+    if (isSupabaseConfigured && supabase) {
+      (async () => {
+        // Delete items first to satisfy foreign key constraints gently
+        await supabase.from('wow_menu_items').delete().neq('id', 'placeholder-doesnot-exist');
+        await supabase.from('wow_categories').delete().neq('id', 'placeholder-doesnot-exist');
+
+        // Seed default categories
+        for (const cat of cats) {
+          await supabase.from('wow_categories').upsert({
+            id: cat.id,
+            name: cat.name,
+            count: cat.count,
+            icon: cat.icon,
+            description: cat.description
+          });
+        }
+
+        // Seed default items
+        for (const item of items) {
+          const img = typeof item.imageUrl === 'object' && item.imageUrl !== null ? (item.imageUrl as any).src : item.imageUrl;
+          await supabase.from('wow_menu_items').upsert({
+            id: item.id,
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            description: item.description,
+            imageUrl: img,
+            ingredients: item.ingredients,
+            estimatedTime: item.estimatedTime || '10-15 mins',
+            nutrition: item.nutrition || {},
+            tags: item.tags || {},
+            rating: item.rating || 4.5,
+            reviewCount: item.reviewCount || 0
+          });
+        }
+      })().catch(err => console.error('Failed to reset Supabase to default seeded state:', err));
+    }
   } catch (err) {
     console.error('Failed to reset storage to defaults', err);
   }
   
   return { categories: cats, menuItems: items };
 }
+
+// Pull the entire DB configuration state from Supabase dynamically on startup
+export async function syncFromSupabase(): Promise<{ categories: Category[], menuItems: MenuItem[] } | null> {
+  if (!isSupabaseConfigured || !supabase) return null;
+  try {
+    // 1. Fetch categories
+    const { data: catData, error: catErr } = await supabase.from('wow_categories').select('*');
+    if (catErr) throw catErr;
+
+    // 2. Fetch menu items
+    const { data: itemData, error: itemErr } = await supabase.from('wow_menu_items').select('*');
+    if (itemErr) throw itemErr;
+
+    // Trigger seeding of empty database tables automatically if remote is empty
+    if ((!catData || catData.length === 0) && (!itemData || itemData.length === 0)) {
+      console.log('Remote Supabase backend is empty. Provisioning database details automatically...');
+      const defaultCats = DEFAULT_CATEGORIES.map(cat => ({
+        ...cat,
+        count: DEFAULT_MENU_ITEMS.filter(item => item.category === cat.id).length
+      }));
+
+      // Upload default categories
+      for (const cat of defaultCats) {
+        await supabase.from('wow_categories').upsert({
+          id: cat.id,
+          name: cat.name,
+          count: cat.count,
+          icon: cat.icon,
+          description: cat.description
+        });
+      }
+
+      // Upload default menu items
+      for (const item of DEFAULT_MENU_ITEMS) {
+        const img = typeof item.imageUrl === 'object' && item.imageUrl !== null ? (item.imageUrl as any).src : item.imageUrl;
+        await supabase.from('wow_menu_items').upsert({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          price: item.price,
+          description: item.description,
+          imageUrl: img,
+          ingredients: item.ingredients,
+          estimatedTime: item.estimatedTime || '10-15 mins',
+          nutrition: item.nutrition || {},
+          tags: item.tags || {},
+          rating: item.rating || 4.5,
+          reviewCount: item.reviewCount || 0
+        });
+      }
+
+      localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(defaultCats));
+      localStorage.setItem(STORAGE_KEYS.MENU_ITEMS, JSON.stringify(DEFAULT_MENU_ITEMS));
+      return { categories: defaultCats, menuItems: DEFAULT_MENU_ITEMS };
+    }
+
+    const parsedCats: Category[] = (catData || []).map(c => ({
+      id: c.id,
+      name: c.name,
+      count: Number(c.count || 0),
+      icon: c.icon || 'Flame',
+      description: c.description || ''
+    }));
+
+    const parsedItems: MenuItem[] = (itemData || []).map(i => ({
+      id: i.id,
+      name: i.name,
+      category: i.category,
+      price: Number(i.price || 0),
+      description: i.description || '',
+      imageUrl: i.imageUrl || i.image_url || '',
+      ingredients: i.ingredients || [],
+      estimatedTime: i.estimatedTime || i.estimated_time || '10-15 mins',
+      nutrition: i.nutrition || {},
+      tags: i.tags || {},
+      rating: Number(i.rating || 4.5),
+      reviewCount: Number(i.reviewCount || 0)
+    }));
+
+    localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(parsedCats));
+    localStorage.setItem(STORAGE_KEYS.MENU_ITEMS, JSON.stringify(parsedItems));
+
+    return { categories: parsedCats, menuItems: parsedItems };
+  } catch (err) {
+    console.error('Failed to pull from Supabase database:', err);
+    return null;
+  }
+}
+

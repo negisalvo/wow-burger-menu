@@ -1,7 +1,10 @@
+"use client";
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ShoppingCart, ShieldCheck, Ticket } from 'lucide-react';
 import { MenuItem } from '../types';
+import { getImageSrc } from '../lib/utils';
 
 export interface CartItem {
   id: string;
@@ -171,7 +174,7 @@ export default function CartDrawer({
                     {/* Item Image */}
                     <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-neutral-800">
                       <img
-                        src={cartItem.item.imageUrl}
+                        src={getImageSrc(cartItem.item.imageUrl)}
                         alt={cartItem.item.name}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"

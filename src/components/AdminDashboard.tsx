@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useMemo } from 'react';
 import { 
   Plus, Edit2, Trash2, Key, BarChart3, AppWindow, Flame, Check, X, 
@@ -6,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Category, MenuItem, CategoryId } from '../types';
 import { getStoredCategories, getStoredMenuItems, saveCategories, saveMenuItems, resetToDefaults } from '../data/store';
+import { getImageSrc } from '../lib/utils';
 
 // Set of preloaded elegant icons the manager can choose for categories
 const ICON_PICKER_OPTIONS = [
@@ -1124,7 +1127,7 @@ export default function AdminDashboard({
                           <div className="flex items-center gap-2">
                             <div className="w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 shrink-0">
                               <img
-                                src={item.imageUrl}
+                                src={getImageSrc(item.imageUrl)}
                                 alt={item.name}
                                 referrerPolicy="no-referrer"
                                 className="w-full h-full object-cover"

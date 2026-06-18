@@ -14,7 +14,7 @@ export interface MenuItem {
   category: CategoryId;
   price: number; // in ETB
   description: string;
-  imageUrl: string;
+  imageUrl: any; // Can be string URL or imported StaticImageData in Next.js
   ingredients: string[];
   estimatedTime?: string; // e.g. "12-15 mins"
   nutrition?: {

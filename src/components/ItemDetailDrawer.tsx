@@ -1,7 +1,10 @@
+"use client";
+
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Clock, Star, Flame, Salad, Landmark, ShieldCheck, Dumbbell, Award, ChevronRight, Heart, ShoppingBag, Plus } from 'lucide-react';
 import { MenuItem } from '../types';
+import { getImageSrc } from '../lib/utils';
 
 interface ItemDetailDrawerProps {
   item: MenuItem | null;
@@ -58,7 +61,7 @@ export default function ItemDetailDrawer({
           {/* Hero Section Container */}
           <div className="relative h-72 sm:h-80 w-full overflow-hidden shrink-0 bg-neutral-900">
             <img
-              src={item.imageUrl}
+              src={getImageSrc(item.imageUrl)}
               alt={item.name}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
@@ -279,7 +282,7 @@ export default function ItemDetailDrawer({
                     >
                       <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-neutral-800">
                         <img
-                          src={relItem.imageUrl}
+                          src={getImageSrc(relItem.imageUrl)}
                           alt={relItem.name}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"

@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowRight, Sparkles, Flame, Shield, Award, MapPin } from 'lucide-react';
 import gourmetBurgerHero from '../assets/images/gourmet_burger_hero_1781288051773.jpg';
 
@@ -95,7 +97,7 @@ export default function Hero({ onExploreClick }: HeroProps) {
             
             {/* Real gourmet image */}
             <img
-              src={gourmetBurgerHero}
+              src={typeof gourmetBurgerHero === 'object' && gourmetBurgerHero !== null ? (gourmetBurgerHero as any).src : gourmetBurgerHero}
               alt="Signature Wow Burger"
               referrerPolicy="no-referrer"
               className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
