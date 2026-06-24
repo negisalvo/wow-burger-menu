@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Clock, Star, Flame, Salad, Landmark, ShieldCheck, Dumbbell, Award, ChevronRight, Heart, ShoppingBag, Plus } from 'lucide-react';
+import { X, Clock, Star, Flame, Salad, Landmark, ShieldCheck, Dumbbell, Award, ChevronRight, ChevronLeft, Heart, ShoppingBag, Plus } from 'lucide-react';
 import { MenuItem } from '../types';
 import { getImageSrc } from '../lib/utils';
 
@@ -28,6 +28,29 @@ export default function ItemDetailDrawer({
   isDarkMode,
 }: ItemDetailDrawerProps) {
   if (!item) return null;
+
+  const [activeImageIdx, setActiveImageIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    setActiveImageIdx(0);
+  }, [item?.id]);
+
+  const carouselImages = React.useMemo(() => {
+    if (item && item.imageUrls && item.imageUrls.length > 0) {
+      return item.imageUrls;
+    }
+    return item ? [item.imageUrl] : [];
+  }, [item]);
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImageIdx((prev) => (prev === 0 ? carouselImages.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImageIdx((prev) => (prev === carouselImages.length - 1 ? 0 : prev + 1));
+  };
 
   // Get related items (same category, excluding current item) from live list
   const relatedItems = (menuItems || []).filter(
@@ -60,18 +83,67 @@ export default function ItemDetailDrawer({
         >
           {/* Hero Section Container */}
           <div className="relative h-72 sm:h-80 w-full overflow-hidden shrink-0 bg-neutral-900">
-            <img
-              src={getImageSrc(item.imageUrl)}
-              alt={item.name}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
-              }}
-            />
+            {carouselImages.length > 0 && (
+              <img
+                src={getImageSrc(carouselImages[activeImageIdx])}
+                alt={`${item.name} - image ${activeImageIdx + 1}`}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover transition-opacity duration-300"
+                key={activeImageIdx}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                }}
+              />
+            )}
+
+            {/* Carousel Controls */}
+            {carouselImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={handlePrevImage}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-black/60 hover:bg-black/90 text-white rounded-full backdrop-blur-md transition-all border border-white/20 hover:border-white/40 cursor-pointer active:scale-90 select-none"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextImage}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-black/60 hover:bg-black/90 text-white rounded-full backdrop-blur-md transition-all border border-white/20 hover:border-white/40 cursor-pointer active:scale-90 select-none"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+
+                {/* Numbers Overlay */}
+                <span className="absolute top-16 right-4 z-10 px-2.5 py-1 bg-black/60 rounded-full text-[9px] font-extrabold uppercase tracking-widest text-white border border-white/10 font-mono">
+                  {activeImageIdx + 1} / {carouselImages.length}
+                </span>
+
+                {/* Bottom carousel navigation indicator dots */}
+                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+                  {carouselImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveImageIdx(idx);
+                      }}
+                      className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                        idx === activeImageIdx ? 'bg-[#ff6b00] w-3.5' : 'bg-white/40 hover:bg-white/70'
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* Dark vignette gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent pointer-events-none" />
 
             {/* Float Close Button */}
             <button

@@ -11,7 +11,7 @@ import CartDrawer, { CartItem } from './CartDrawer';
 import Footer from './Footer';
 import AdminDashboard from './AdminDashboard';
 import { MenuItem, Category, CategoryId } from '../types';
-import { getStoredCategories, getStoredMenuItems } from '../data/store';
+import { getStoredCategories, getStoredMenuItems, incrementItemViewCount } from '../data/store';
 import { getImageSrc } from '../lib/utils';
 
 export default function MainApp() {
@@ -22,6 +22,18 @@ export default function MainApp() {
   const [activeCategory, setActiveCategory] = useState<CategoryId | 'all'>('all');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+
+  // Analytics view logging & selections
+  const handleSelectItem = (item: MenuItem | null) => {
+    if (item) {
+      const updatedList = incrementItemViewCount(item.id);
+      setMenuItems(updatedList);
+      const freshlyUpdated = updatedList.find(i => i.id === item.id) || item;
+      setSelectedItem(freshlyUpdated);
+    } else {
+      setSelectedItem(null);
+    }
+  };
 
   // Theme support: defaulting to the demanded dark theme (#0f0f11 background)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -159,7 +171,7 @@ export default function MainApp() {
   });
 
   const handleJumpToSection = (section: 'home' | 'menu' | 'contact') => {
-    setSelectedItem(null);
+    handleSelectItem(null);
     setShowOnlyFavorites(false);
 
     if (section === 'home') {
@@ -307,7 +319,7 @@ export default function MainApp() {
                 <MenuItemCard
                   key={item.id}
                   item={item}
-                  onSelect={setSelectedItem}
+                  onSelect={handleSelectItem}
                   isFavorite={favoriteIds.includes(item.id)}
                   onToggleFavorite={handleToggleFavorite}
                   onAddToCart={handleAddToCart}
@@ -368,7 +380,7 @@ export default function MainApp() {
               {spotlightItems.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => setSelectedItem(item)}
+                  onClick={() => handleSelectItem(item)}
                   className={`group rounded-3xl border transition-all cursor-pointer overflow-hidden flex flex-col h-full hover:shadow-lg ${
                     isDarkMode 
                       ? 'bg-[#121216] border-neutral-800/80 text-white hover:border-[#ff6b00]/30' 
@@ -581,8 +593,8 @@ export default function MainApp() {
         {/* Detailed Menu Item View Slide drawer */}
         <ItemDetailDrawer
           item={selectedItem}
-          onClose={() => setSelectedItem(null)}
-          onSelectRelated={(relatedItem) => setSelectedItem(relatedItem)}
+          onClose={() => handleSelectItem(null)}
+          onSelectRelated={(relatedItem) => handleSelectItem(relatedItem)}
           menuItems={menuItems}
           isFavorite={selectedItem ? favoriteIds.includes(selectedItem.id) : false}
           onToggleFavorite={handleToggleFavorite}

@@ -1,11 +1,68 @@
-import { Category, MenuItem } from '../types';
+import { Category, MenuItem, Employee } from '../types';
 import { CATEGORIES as DEFAULT_CATEGORIES, MENU_ITEMS as DEFAULT_MENU_ITEMS } from './menu';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STORAGE_KEYS = {
   CATEGORIES: 'wow_categories',
-  MENU_ITEMS: 'wow_menu_items'
+  MENU_ITEMS: 'wow_menu_items',
+  EMPLOYEES: 'wow_employees'
 };
+
+const DEFAULT_EMPLOYEES: Employee[] = [
+  {
+    id: 'emp-1',
+    name: 'Selam Tesfaye',
+    username: 'selam_manager',
+    passwordPlain: 'admin',
+    role: 'Manager',
+    joinedDate: '2025-01-20'
+  },
+  {
+    id: 'emp-2',
+    name: 'Yonas Kebede',
+    username: 'yonas_chef',
+    passwordPlain: 'chef123',
+    role: 'Chef',
+    joinedDate: '2025-03-15'
+  },
+  {
+    id: 'emp-3',
+    name: 'Betty Alene',
+    username: 'betty_cashier',
+    passwordPlain: 'cashier123',
+    role: 'Cashier',
+    joinedDate: '2025-05-10'
+  }
+];
+
+export function getStoredEmployees(): Employee[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.EMPLOYEES);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Employee[];
+      if (parsed && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.error('Error loading employees:', err);
+  }
+  // Initialize with defaults if empty
+  try {
+    localStorage.setItem(STORAGE_KEYS.EMPLOYEES, JSON.stringify(DEFAULT_EMPLOYEES));
+  } catch (err) {
+    console.error('Failed to save default employees:', err);
+  }
+  return DEFAULT_EMPLOYEES;
+}
+
+export function saveEmployees(employees: Employee[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.EMPLOYEES, JSON.stringify(employees));
+  } catch (err) {
+    console.error('Failed to save employees to local storage', err);
+  }
+}
 
 // State variables to store the dynamically resolved table names
 let resolvedCategoriesTable = 'wow_categories';
@@ -464,5 +521,23 @@ async function safeUpsertMenuItem(item: any): Promise<void> {
         throw finalError;
       }
     }
+  }
+}
+
+// Track view count for item analytics
+export function incrementItemViewCount(itemId: string): MenuItem[] {
+  try {
+    const items = getStoredMenuItems();
+    const updated = items.map(item => {
+      if (item.id === itemId) {
+        return { ...item, viewCount: (item.viewCount || 0) + 1 };
+      }
+      return item;
+    });
+    saveMenuItems(updated);
+    return updated;
+  } catch (err) {
+    console.error('Failed to increment view count', err);
+    return getStoredMenuItems();
   }
 }
